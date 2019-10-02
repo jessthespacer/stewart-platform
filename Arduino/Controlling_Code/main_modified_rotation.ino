@@ -24,8 +24,8 @@ const float deg2rad = M_PI / 180;
 const float rad2deg = 180 / M_PI;
 const float invrt2 = 1 / sqrt(2);
 int count=0;
-const int SERVOMIN[6] = {155, 135, 160, 150, 130, 155}; // 'minimum' pulse length count (out of 4096)
-const int SERVOMAX[6] = {480, 500, 510, 515, 550, 495}; // 'maximum' pulse length count (out of 4096)
+const int SERVOMIN[6] = {155, 135, 190, 145, 140, 155}; // 'minimum' pulse length count (out of 4096)
+const int SERVOMAX[6] = {475, 500, 555, 490, 545, 495}; // 'maximum' pulse length count (out of 4096)
 int SERVOMID[6] = {0, 0, 0, 0, 0, 0}; // 'mid' pulse length count (out of 4096)
 const int SERVOCHG = 5; // 'change' pulse length count
 String breaker; 
@@ -203,10 +203,12 @@ void loop() {
       case '5':
         Pang[0] -= invrt2 * deg2rad;
         Pang[1] += invrt2 * deg2rad;
+        break;
       case '2':
         Pang[0] += invrt2 * deg2rad;
         Pang[1] -= invrt2 * deg2rad;  
-
+        break;
+        
       // Go to origin
       case 'o':
         T.X() = 0;
@@ -228,9 +230,20 @@ void loop() {
         
         getAlpha(T, Pang, horn, alpha, beta, P, B, s, a);
         
+        //if else statement used to include the calibration factor; 7 degrees is chosen to correct the required servos and has been tested to be the correct value
+        //This change is also made in the final step of the program
+        
         for(int i = 0; i<6; i++){
-          val[i] = map(alpha[i]*rad2deg,pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);
-        }       
+          if(i != 1 and i != 4){
+            val[i] = map(alpha[i]*rad2deg,pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);
+          } 
+          else if (i==4){
+             val[i] = map(((alpha[i]*rad2deg)+7),pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);
+          }
+         else{
+            val[i] = map(((alpha[i]*rad2deg)-7),pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);
+          }
+        }
 
         for (i=0; i<6; i++) {
           pwm.setPWM(i+1, 0, val[i]); // added +1 to match PWM port numbering (pins 1..6 used)
@@ -265,7 +278,15 @@ void loop() {
         Serial.println(alphn);
         }
       for(int i = 0; i<6; i++){
-        val[i] = map(alpha[i]*rad2deg,pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);
+        if(i != 1 and i != 4){
+            val[i] = map(alpha[i]*rad2deg,pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);
+          } 
+          else if (i==4){
+             val[i] = map(((alpha[i]*rad2deg)+7),pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);
+          }
+         else{
+            val[i] = map(((alpha[i]*rad2deg)-7),pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);
+          }
       }
       Serial.println("]");
     
