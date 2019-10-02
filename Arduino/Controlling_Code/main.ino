@@ -22,9 +22,9 @@
 char choice = 'y';
 const float deg2rad = M_PI / 180;
 const float rad2deg = 180 / M_PI;
-
-const int SERVOMIN[6] = {155, 130, 175, 155, 150, 160}; // 'minimum' pulse length count (out of 4096)
-const int SERVOMAX[6] = {480, 470, 530, 535, 550, 495}; // 'maximum' pulse length count (out of 4096)
+int count=0;
+const int SERVOMIN[6] = {155, 135, 160, 150, 130, 155}; // 'minimum' pulse length count (out of 4096)
+const int SERVOMAX[6] = {480, 500, 510, 515, 550, 495}; // 'maximum' pulse length count (out of 4096)
 int SERVOMID[6] = {0, 0, 0, 0, 0, 0}; // 'mid' pulse length count (out of 4096)
 const int SERVOCHG = 5; // 'change' pulse length count
 String breaker; 
@@ -39,7 +39,7 @@ bool horn = true;
 float s = 177;
   
 // Horn centre-to-centre length [mm]
-float a = 16;
+float a = 12.5;
 
 // Rod-platform joints (platform coords.) [mm]
 // These are precalculated, see Jin for source
@@ -170,38 +170,38 @@ void loop() {
       // Input of [q,w,e,r,t,y] -> decrease respective (1..6) values
       
       case 'q': 
-       T.X() += 1;
+       T.X() += 10;
         break;
       case 'w': 
-        T.Y() += 1;
+        T.Y() += 10;
         break;
       
       case 'e': 
-        T.Z() += 1;
+        T.Z() += 10;
         break;
       case 'a': 
-        T.X() -= 1;
+        T.X() -= 10;
         break;
       
       case 's': 
-        T.Y() -= 1;
+        T.Y() -= 10;
         break;
       case 'd': 
-        T.X() -= 1;
+        T.Z() -= 10;
         break;
 
       case '4':
-        Pang[0] += 1;
+        Pang[0] += 1*deg2rad;
         break;
       case '5':
-        Pang[1]+=1;
+        Pang[1]+=1*deg2rad;
         break;
 
       case '1':
-        Pang[0]-=1;
+        Pang[0]-=1*deg2rad;
         break;
       case '2':
-        Pang[1]-=1;
+        Pang[1]-=1*deg2rad;
         break;
 
       case 'o':
@@ -211,28 +211,77 @@ void loop() {
         for(int i = 0; i<2; i++){
           Pang[i] = 0;
           }
-        break;        
+        break; 
+      
+      case 'c':
+        T.X() = 0;
+        T.Y() = 0;
+        T.Z() = 175.4;
+        for(int i = 0; i<2; i++){
+          Pang[i] = 0;
+        }
+        
+        getAlpha(T, Pang, horn, alpha, beta, P, B, s, a);
+        
+        for(int i = 0; i<6; i++){
+          val[i] = map(alpha[i]*rad2deg,pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);
+        }       
+
+        for (i=0; i<6; i++) {
+          pwm.setPWM(i+1, 0, val[i]); // added +1 to match PWM port numbering (pins 1..6 used)
+        }
+
+        delay(1000);
+
+        T.X() = 0;
+        T.Y() = 0;
+        T.Z() = 173.4;
+        for(int i = 0; i<2; i++){
+          Pang[i] = 0;
+        }
+        break;       
       default: Serial.print(" No action taken");
     } // end switch statement
     getAlpha(T, Pang, horn, alpha, beta, P, B, s, a);
-    Serial.print(" Servo values = [");
-    for (int i = 0; i < 6; ++i) {
-    float alphn = alpha[i] * rad2deg;
-    Serial.println(alphn);
-  }
-    for(int i = 0; i<6; i++){
-      val[i] = map(alpha[i]*rad2deg,pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);
-      }
-    Serial.println("]");
 
-    // Update servo commands:
+
+    for (int i=0; i<6; i++){
+      
+      if (alpha[i]*rad2deg<90 or alpha[i]*rad2deg>-90){
+        count++;
+      }
+      
+    }
+
+    if (count==6){
+      Serial.print(" Servo values = [");
+      for (int i = 0; i < 6; ++i) {
+        float alphn = alpha[i] * rad2deg;
+        Serial.println(alphn);
+        }
+      for(int i = 0; i<6; i++){
+        val[i] = map(alpha[i]*rad2deg,pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);
+      }
+      Serial.println("]");
+    
+// Update servo commands:
+    
     for (i=0; i<6; i++) {
       pwm.setPWM(i+1, 0, val[i]); // added +1 to match PWM port numbering (pins 1..6 used)
     }
-  
-  }
+    }
+    //
+    else{
+      Serial.print("Angles are outside of parametric range");
+      Serial.println(" Servo values = [");
+      for (int i = 0; i < 6; ++i) {
+        float alphn = alpha[i] * rad2deg;
+        Serial.println(alphn);
+        }
+    }
+    count=0;
  /*for (short unsigned int i = 0; i < 6; ++i) {
     alpha[i] *= deg2rad;
   }*/
-  // 
+  }
 }

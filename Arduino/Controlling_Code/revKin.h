@@ -1,3 +1,4 @@
+#include <Wire.h>
 #include <Geometry.h>
 #include <math.h>
 
@@ -11,6 +12,8 @@ static float sumsq(Point v) {
 // alph will have leg lengths written to it if horn == false
 void getAlpha(Point T, float Pang[], \
 	bool horn, float alph[], float beta[], Point P[], Point B[], float s, float a) {
+
+  float alph_temp[6];
 
 	// Define platform rotation matrix
 	Rotation ProtB;
@@ -39,14 +42,22 @@ void getAlpha(Point T, float Pang[], \
 			gn = sumsq(l) - (pow(s, 2) - pow(a, 2));
 
 			alphn = asin(gn / sqrt(pow(en, 2) + pow(fn, 2))) - atan2(fn, en);
-			
-			// Write to output
-			alph[n] = alphn;
+      if (isnan(alphn)) {
+        Serial.println("WARNING: INVALID POSITION.");
+        return;
+      }
+      
+      alph_temp[n] = alphn;
 		}
 		else {
 			// Get leg lengths
 			alph[n] = sqrt(sumsq(l));
 		}
 	}
+
+  for (int n = 0; n < 6; ++n) {
+    alph[n] = alph_temp[n];
+  }
+ 
 	return;
 }
