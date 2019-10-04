@@ -178,7 +178,7 @@ void loop() {
         break;
       
       case 'e': 
-        T.Z() += 10;
+        T.Z() += 2;
         break;
       case 'a': 
         T.X() -= 10;
@@ -188,17 +188,18 @@ void loop() {
         T.Y() -= 10;
         break;
       case 'd': 
-        T.Z() -= 10;
+        T.Z() -= 2;
         break;
 
       // Bank
       case '4':
         Pang[0] += invrt2 * deg2rad;
         Pang[1] += invrt2 * deg2rad;
+        break;      
       case '1':
         Pang[0] -= invrt2 * deg2rad;
         Pang[1] -= invrt2 * deg2rad;
-
+        break;
       // Pitch
       case '5':
         Pang[0] -= invrt2 * deg2rad;
@@ -235,13 +236,13 @@ void loop() {
         
         for(int i = 0; i<6; i++){
           if(i != 1 and i != 4){
-            val[i] = map(alpha[i]*rad2deg,pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);
+            val[i] = floor(map(alpha[i]*rad2deg,pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]));
           } 
           else if (i==4){
-             val[i] = map(((alpha[i]*rad2deg)+7),pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);
+             val[i] = floor(map(((alpha[i]*rad2deg)+7),pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]));
           }
          else{
-            val[i] = map(((alpha[i]*rad2deg)-7),pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);
+            val[i] = floor(map(((alpha[i]*rad2deg)-6.5),pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]));
           }
         }
 
@@ -279,13 +280,13 @@ void loop() {
         }
       for(int i = 0; i<6; i++){
         if(i != 1 and i != 4){
-            val[i] = map(alpha[i]*rad2deg,pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);
+            val[i] = floor(map(alpha[i]*rad2deg,pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]));
           } 
           else if (i==4){
-             val[i] = map(((alpha[i]*rad2deg)+7),pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);
+             val[i] = floor(map(((alpha[i]*rad2deg)+7),pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]));
           }
          else{
-            val[i] = map(((alpha[i]*rad2deg)-7),pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);
+            val[i] = floor(map(((alpha[i]*rad2deg)-6.5),pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]));
           }
       }
       Serial.println("]");
