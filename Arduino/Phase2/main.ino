@@ -36,10 +36,10 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 bool horn = true;
 
 // Rod centre-to-centre length [mm]
-float s = 177;
+float s = 174
   
 // Horn centre-to-centre length [mm]
-float a = 12.5;
+float a = 44;
 
 // Rod-platform joints (platform coords.) [mm]
 // These are precalculated, see Jin for source
@@ -79,67 +79,70 @@ for(int i= 0; i<6; i++)
 {
 	val[i] = SERVOMID[i];
 }
-	/* THESE ARE PRECALCULATED, SEE JIN FOR SOURCE */
-	/* THESE ARE OUT OF DATE, SEE JIN */
-	// Rod-platform joints (platform coords.) [mm]
-	P[0].X() = 57.4337;
-	P[0].Y() = -26.6658;
-	P[0].Z() = 0;
-	P[1].X() = 57.4337;
-	P[1].Y() = 26.6658;
-	P[1].Z() = 0;
-	P[2].X() = 0;
-	P[2].Y() = 60.96;
-	P[2].Z() = 0;
-	P[3].X() = -57.4337;
-	P[3].Y() = 26.6658;
-	P[3].Z() = 0;
-	P[4].X() = -57.4337;
-	P[4].Y() = -26.6658;
-	P[4].Z() = 0;
-	P[5].X() = 0;
-	P[5].Y() = -60.96;
-	P[5].Z() = 0;
+	/* THESE ARE PRECALCULATED, SEE CALCULATION SHEET ON GDRIVE:         */
+	/* Untitled.docx (3B)\Analysis\Stewart Platform Construction Vectors */
+	/* IF YOU HAVE QUESTIONS, TALK TO JIN                                */
+	// Rod-platform joints (SW model coords.) [mm]
+	P[0].X() = -6.34995858;
+	P[0].Y() = -89.93340186;
 
-	// Rod-base joints (platform coords.) [mm]
-	B[0].X() = 86.4235;
-	B[0].Y() = -33.7820;
-	B[0].Z() = 0;
-	B[1].X() = 86.4235;
-	B[1].Y() = 33.7820;
-	B[1].Z() = 0;
-	B[2].X() = -13.9557;
-	B[2].Y() = 91.7359;
-	B[2].Z() = 0;
-	B[3].X() = -72.4678;
-	B[3].Y() = 57.9539;
-	B[3].Z() = 0;
-	B[4].X() = -72.4678;
-	B[4].Y() = -57.9539;
-	B[4].Z() = 0;
-	B[5].X() = -13.9557;
-	B[5].Y() = -91.7359;
-	B[5].Z() = 0;
+	P[1].X() = 6.34995858;
+	P[1].Y() = -89.93340186;
 
-// Convert to rads
-for (int i = 0; i < 6; ++i) {
-	beta[i] *= deg2rad;
-}
+	P[2].X() = 81.05958995;
+	P[2].Y() = 39.46747548;
+
+	P[3].X() = 74.70963137;
+	P[3].Y() = 50.46592637;
+
+	P[4].X() = -74.70963137;
+	P[4].Y() = 50.46592637;
+
+	P[5].X() = -81.05958995;
+	P[5].Y() = 39.46747548;
+
+	// Rod-base joints (SW model coords.) [mm]
+	B[0].X() = -42.07005255;
+	B[0].Y() = -77.13726744;
+
+	B[1].X() = 42.07005255;
+	B[1].Y() = -77.13726744;
+
+	B[2].X() = 87.83785946;
+	B[2].Y() = 2.134899473;
+
+	B[3].X() = 45.76780691;
+	B[3].Y() = 75.00236797;
+
+	B[4].X() = -45.76780691;
+	B[4].Y() = 75.00236797;
+
+	B[5].X() = -87.83785946;
+	B[5].Y() = 2.134899473;
+	
+	for (int i = 0; i < 6; ++i) {
+		P[i].Z() = 0;
+		B[i].Z() = 0;
+	}
+	// Convert to rads
+	for (int i = 0; i < 6; ++i) {
+		beta[i] *= deg2rad;
+	}
 	// Set platform translation position to neutral
 	T.X() = 0;
 	T.Y() = 0;
-	T.Z() = 173.4;
+	T.Z() = 155;
 
 	// --- SETUP CALCULATION VARIABLES ---
 	// Convert to rads
 	for (int i = 0; i < 3; ++i) {
-	Pang[i] *= deg2rad;
+		Pang[i] *= deg2rad;
 	}
 
 	for (int i = 0; i < 6; ++i) {
-	L[i].X() = 0;
-	L[i].Y() = 0;
-	L[i].Z() = 0;
+		L[i].X() = 0;
+		L[i].Y() = 0;
+		L[i].Z() = 0;
 	}
 
 	Serial.begin(9600); // opens serial port, sets data rate to 9600 bps
@@ -156,7 +159,7 @@ void loop() {
 	Serial.print("I received: ");
 	Serial.print(breaker);
 
-	
+	// RABHAV: This code needs to change to use the joystick input
 	switch (breaker[0]) {
 	  // Input of "1" to "6" -> increase respective (1..6) values
 	  // Input of [q,w,e,r,t,y] -> decrease respective (1..6) values
