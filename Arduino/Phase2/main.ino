@@ -23,8 +23,8 @@ char choice = 'y';
 const float deg2rad = M_PI / 180;
 const float rad2deg = 180 / M_PI;
 int count=0;
-const int SERVOMIN[6] = {155, 135, 160, 150, 130, 155}; // 'minimum' pulse length count (out of 4096)
-const int SERVOMAX[6] = {480, 500, 510, 515, 550, 495}; // 'maximum' pulse length count (out of 4096)
+const int SERVOMIN[6] = {155, 155, 180, 170, 140, 160}; // 'minimum' pulse length count (out of 4096)
+const int SERVOMAX[6] = {480, 475, 535, 524, 540, 495}; // 'maximum' pulse length count (out of 4096)
 int SERVOMID[6] = {0, 0, 0, 0, 0, 0}; // 'mid' pulse length count (out of 4096)
 const int SERVOCHG = 5; // 'change' pulse length count
 String breaker; 
@@ -36,7 +36,7 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 bool horn = true;
 
 // Rod centre-to-centre length [mm]
-float s = 174
+float s = 174;
   
 // Horn centre-to-centre length [mm]
 float a = 44;
@@ -165,24 +165,24 @@ void loop() {
 	  // Input of [q,w,e,r,t,y] -> decrease respective (1..6) values
 	  
 	  case 'q': 
-	   T.X() += 10;
+	   T.X() += 2;
 		break;
 	  case 'w': 
-		T.Y() += 10;
+		T.Y() += 2;
 		break;
 	  
 	  case 'e': 
-		T.Z() += 10;
+		T.Z() += 2;
 		break;
 	  case 'a': 
-		T.X() -= 10;
+		T.X() -= 2;
 		break;
 	  
 	  case 's': 
-		T.Y() -= 10;
+		T.Y() -= 2;
 		break;
 	  case 'd': 
-		T.Z() -= 10;
+		T.Z() -= 2;
 		break;
 
 	  case '4':
@@ -202,7 +202,7 @@ void loop() {
 	  case 'o':
 		T.X() = 0;
 		T.Y() = 0;
-		T.Z() = 173.4;
+		T.Z() = 165.4;
 		for(int i = 0; i<2; i++){
 		  Pang[i] = 0;
 		  }
@@ -219,10 +219,15 @@ void loop() {
 		getAlpha(T, Pang, horn, alpha, beta, P, B, s, a);
 		
 		for(int i = 0; i<6; i++){
-		  val[i] = map(alpha[i]*rad2deg,pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);
-		}       
-
-		for (i=0; i<6; i++) {
+      if(i!=4){
+		    val[i] = map(alpha[i]*rad2deg,pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);
+ 		  }       
+     if(i == 4)
+     {
+        val[i] = (2.3846*alpha[i]*rad2deg) + 322;
+     }
+		}
+		for (int i=0; i<6; i++) {
 		  pwm.setPWM(i+1, 0, val[i]); // added +1 to match PWM port numbering (pins 1..6 used)
 		}
 
@@ -255,13 +260,19 @@ void loop() {
 		Serial.println(alphn);
 		}
 	  for(int i = 0; i<6; i++){
-		val[i] = map(alpha[i]*rad2deg,pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);
-	  }
+      if(i!=4){
+        val[i] = map(alpha[i]*rad2deg,pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);
+      }       
+     if(i == 4)
+     {
+        val[i] = (-2.3846*((alpha[i]*rad2deg)-3)) + 322;
+     }
+    }
 	  Serial.println("]");
 	
 // Update servo commands:
 	
-	for (i=0; i<6; i++) {
+	for (int i=0; i<6; i++) {
 	  pwm.setPWM(i+1, 0, val[i]); // added +1 to match PWM port numbering (pins 1..6 used)
 	}
 	}
