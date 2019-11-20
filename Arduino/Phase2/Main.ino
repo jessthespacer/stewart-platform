@@ -68,7 +68,6 @@ float Pang[3] = {0, 0, 0};
 
 // Initialize leg vector array [mm]
 Point L[6];
-
 float alpha[6] = {0, 0, 0, 0, 0, 0};
 
 String valInput; // Serial input var.
@@ -154,7 +153,100 @@ for(int i= 0; i<6; i++)
   Serial.println("Running example: Servo motor actuation using messaging");
   pwm.begin();
   pwm.setPWMFreq(60);  // Analog servos run at ~60 Hz updates
-}
+
+//Calibration
+  T.X() = 0;
+  T.Y() = 0;
+  T.Z() = 165;
+
+ getAlpha(T, Pang, horn, alpha, beta, P, B, s, a);
+
+  Serial.print(" Servo values = [");
+    for (int i = 0; i < 6; ++i) {
+    float alphn = alpha[i] * rad2deg;
+    Serial.println(alphn);
+    }
+    for(int i = 0; i<6; i++){
+     if(i==0){
+        val[i] = -0.0004*pow(alpha[i] * rad2deg,3)+0.0018*pow(alpha[i] * rad2deg,2)+2.5238*(alpha[i] * rad2deg)+338.57;       
+      }       
+     if(i == 1)
+     {
+        val[i] = -0.0036*pow(alpha[i] * rad2deg,2)-2.3214*(alpha[i] * rad2deg)+354.29;
+     }
+     if(i == 2)
+     {
+        val[i] = -0.0003*pow(alpha[i] * rad2deg,3)-0.0036*pow(alpha[i] * rad2deg,2)+2.7302*(alpha[i] * rad2deg)+379.29;
+     }
+     if(i == 3)
+     {
+        val[i] = 0.0036*pow(alpha[i] * rad2deg,2)-2.3214*(alpha[i] * rad2deg)+385.71;
+     }
+     if(i == 4)
+     {
+        val[i] = -0.00002*pow(alpha[i] * rad2deg,4)-0.0007*pow(alpha[i] * rad2deg,3)+0.0157*pow(alpha[i] * rad2deg,2)+3.4325*(alpha[i] * rad2deg)+354.91;
+     }
+     if(i == 5)
+     {
+        val[i] = 0.0012*pow(alpha[i] * rad2deg,2)-2.25*(alpha[i] * rad2deg)+350.95;
+     }
+    }
+    Serial.println("]");
+  
+// Update servo commands:
+  
+  for (int i=0; i<6; i++) {
+    pwm.setPWM(i+1, 0, val[i]); // added +1 to match PWM port numbering (pins 1..6 used)
+  }
+
+  delay(1000);
+  
+  T.X() = 0;
+  T.Y() = 0;
+  T.Z() = 155;
+  
+  getAlpha(T, Pang, horn, alpha, beta, P, B, s, a);
+
+  Serial.print(" Servo values = [");
+    for (int i = 0; i < 6; ++i) {
+    float alphn = alpha[i] * rad2deg;
+    Serial.println(alphn);
+    }
+    for(int i = 0; i<6; i++){
+     if(i==0){
+        val[i] = -0.0004*pow(alpha[i] * rad2deg,3)+0.0018*pow(alpha[i] * rad2deg,2)+2.5238*(alpha[i] * rad2deg)+338.57;       
+      }       
+     if(i == 1)
+     {
+        val[i] = -0.0036*pow(alpha[i] * rad2deg,2)-2.3214*(alpha[i] * rad2deg)+354.29;
+     }
+     if(i == 2)
+     {
+        val[i] = -0.0003*pow(alpha[i] * rad2deg,3)-0.0036*pow(alpha[i] * rad2deg,2)+2.7302*(alpha[i] * rad2deg)+379.29;
+     }
+     if(i == 3)
+     {
+        val[i] = 0.0036*pow(alpha[i] * rad2deg,2)-2.3214*(alpha[i] * rad2deg)+385.71;
+     }
+     if(i == 4)
+     {
+        val[i] = -0.00002*pow(alpha[i] * rad2deg,4)-0.0007*pow(alpha[i] * rad2deg,3)+0.0157*pow(alpha[i] * rad2deg,2)+3.4325*(alpha[i] * rad2deg)+354.91;
+     }
+     if(i == 5)
+     {
+        val[i] = 0.0012*pow(alpha[i] * rad2deg,2)-2.25*(alpha[i] * rad2deg)+350.95;
+     }
+    }
+    Serial.println("]");
+  
+// Update servo commands:
+  
+  for (int i=0; i<6; i++) {
+    pwm.setPWM(i+1, 0, val[i]); // added +1 to match PWM port numbering (pins 1..6 used)
+  }
+  }
+
+
 
 void loop() {    
   if (Serial.available() > 0) {
@@ -202,12 +294,28 @@ void loop() {
     Serial.println(alphn);
     }
     for(int i = 0; i<6; i++){
-      if(i!=4){
-        val[i] = map(alpha[i]*rad2deg,pow(-1,i)*90,pow(-1,i)*-90,SERVOMIN[i],SERVOMAX[i]);       
+     if(i==0){
+        val[i] = -0.0004*pow(alpha[i] * rad2deg,3)+0.0018*pow(alpha[i] * rad2deg,2)+2.5238*(alpha[i] * rad2deg)+338.57;       
       }       
+     if(i == 1)
+     {
+        val[i] = -0.0036*pow(alpha[i] * rad2deg,2)-2.3214*(alpha[i] * rad2deg)+354.29;
+     }
+     if(i == 2)
+     {
+        val[i] = -0.0003*pow(alpha[i] * rad2deg,3)-0.0036*pow(alpha[i] * rad2deg,2)+2.7302*(alpha[i] * rad2deg)+379.29;
+     }
+     if(i == 3)
+     {
+        val[i] = 0.0036*pow(alpha[i] * rad2deg,2)-2.3214*(alpha[i] * rad2deg)+385.71;
+     }
      if(i == 4)
      {
-        val[i] = (-2.3846*((alpha[i]*rad2deg)-3)) + 322;
+        val[i] = -0.00002*pow(alpha[i] * rad2deg,4)-0.0007*pow(alpha[i] * rad2deg,3)+0.0157*pow(alpha[i] * rad2deg,2)+3.4325*(alpha[i] * rad2deg)+354.91;
+     }
+     if(i == 5)
+     {
+        val[i] = 0.0012*pow(alpha[i] * rad2deg,2)-2.25*(alpha[i] * rad2deg)+350.95;
      }
     }
     Serial.println("]");
