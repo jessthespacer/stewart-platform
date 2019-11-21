@@ -23,8 +23,8 @@ char choice = 'y';
 const float deg2rad = M_PI / 180;
 const float rad2deg = 180 / M_PI;
 int count=0;
-const int SERVOMIN[6] = {155, 155, 180, 170, 140, 160}; // 'minimum' pulse length count (out of 4096)
-const int SERVOMAX[6] = {480, 475, 535, 524, 540, 495}; // 'maximum' pulse length count (out of 4096)
+const int SERVOMIN[6] = {155, 155, 140, 170, 180, 160}; // 'minimum' pulse length count (out of 4096)
+const int SERVOMAX[6] = {480, 475, 540, 524, 535, 495}; // 'maximum' pulse length count (out of 4096)
 int SERVOMID[6] = {0, 0, 0, 0, 0, 0}; // 'mid' pulse length count (out of 4096)
 const int SERVOCHG = 5; // 'change' pulse length count
 String breaker; 
@@ -176,7 +176,7 @@ for(int i= 0; i<6; i++)
      }
      if(i == 2)
      {
-        val[i] = -0.0003*pow(alpha[i] * rad2deg,3)-0.0036*pow(alpha[i] * rad2deg,2)+2.7302*(alpha[i] * rad2deg)+379.29;
+        val[i] = -0.00002*pow(alpha[i] * rad2deg,4)-0.0007*pow(alpha[i] * rad2deg,3)+0.0157*pow(alpha[i] * rad2deg,2)+3.4325*(alpha[i] * rad2deg)+354.91;
      }
      if(i == 3)
      {
@@ -184,7 +184,7 @@ for(int i= 0; i<6; i++)
      }
      if(i == 4)
      {
-        val[i] = -0.00002*pow(alpha[i] * rad2deg,4)-0.0007*pow(alpha[i] * rad2deg,3)+0.0157*pow(alpha[i] * rad2deg,2)+3.4325*(alpha[i] * rad2deg)+354.91;
+        val[i] = -0.0003*pow(alpha[i] * rad2deg,3)-0.0036*pow(alpha[i] * rad2deg,2)+2.7302*(alpha[i] * rad2deg)+379.29;
      }
      if(i == 5)
      {
@@ -251,8 +251,8 @@ for(int i= 0; i<6; i++)
 void loop() {    
   if (Serial.available() > 0) {
   
-  joyX = analogRead(A8);
-  joyY = analogRead(A9);
+  joyY = analogRead(A8);
+  joyX = analogRead(A9);
   
   if (joyX < 512 - delta) {
     platX = joyX + delta;
