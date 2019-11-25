@@ -23,8 +23,8 @@ char choice = 'y';
 const float deg2rad = M_PI / 180;
 const float rad2deg = 180 / M_PI;
 int count=0;
-const int SERVOMIN[6] = {155, 155, 140, 170, 180, 160}; // 'minimum' pulse length count (out of 4096)
-const int SERVOMAX[6] = {480, 475, 540, 524, 535, 495}; // 'maximum' pulse length count (out of 4096)
+const int SERVOMIN[6] = {460, 300, 500, 360, 500, 320}; // 'minimum' pulse length count (out of 4096)
+const int SERVOMAX[6] = {315, 460, 300, 520, 340, 450}; // 'maximum' pulse length count (out of 4096)
 int SERVOMID[6] = {0, 0, 0, 0, 0, 0}; // 'mid' pulse length count (out of 4096)
 const int SERVOCHG = 5; // 'change' pulse length count
 String breaker; 
@@ -167,29 +167,7 @@ for(int i= 0; i<6; i++)
     Serial.println(alphn);
     }
     for(int i = 0; i<6; i++){
-     if(i==0){
-        val[i] = -0.0004*pow(alpha[i] * rad2deg,3)+0.0018*pow(alpha[i] * rad2deg,2)+2.5238*(alpha[i] * rad2deg)+338.57;       
-      }       
-     if(i == 1)
-     {
-        val[i] = -0.0036*pow(alpha[i] * rad2deg,2)-2.3214*(alpha[i] * rad2deg)+354.29;
-     }
-     if(i == 2)
-     {
-        val[i] = -0.00002*pow(alpha[i] * rad2deg,4)-0.0007*pow(alpha[i] * rad2deg,3)+0.0157*pow(alpha[i] * rad2deg,2)+3.4325*(alpha[i] * rad2deg)+354.91;
-     }
-     if(i == 3)
-     {
-        val[i] = 0.0036*pow(alpha[i] * rad2deg,2)-2.3214*(alpha[i] * rad2deg)+385.71;
-     }
-     if(i == 4)
-     {
-        val[i] = -0.0003*pow(alpha[i] * rad2deg,3)-0.0036*pow(alpha[i] * rad2deg,2)+2.7302*(alpha[i] * rad2deg)+379.29;
-     }
-     if(i == 5)
-     {
-        val[i] = 0.0012*pow(alpha[i] * rad2deg,2)-2.25*(alpha[i] * rad2deg)+350.95;
-     }
+        val[i] = map(alpha[i]*rad2deg,-30,30,SERVOMIN[i],SERVOMAX[i]);
     }
     Serial.println("]");
   
@@ -213,29 +191,9 @@ for(int i= 0; i<6; i++)
     Serial.println(alphn);
     }
     for(int i = 0; i<6; i++){
-     if(i==0){
-        val[i] = -0.0004*pow(alpha[i] * rad2deg,3)+0.0018*pow(alpha[i] * rad2deg,2)+2.5238*(alpha[i] * rad2deg)+338.57;       
-      }       
-     if(i == 1)
-     {
-        val[i] = -0.0036*pow(alpha[i] * rad2deg,2)-2.3214*(alpha[i] * rad2deg)+354.29;
-     }
-     if(i == 2)
-     {
-        val[i] = -0.0003*pow(alpha[i] * rad2deg,3)-0.0036*pow(alpha[i] * rad2deg,2)+2.7302*(alpha[i] * rad2deg)+379.29;
-     }
-     if(i == 3)
-     {
-        val[i] = 0.0036*pow(alpha[i] * rad2deg,2)-2.3214*(alpha[i] * rad2deg)+385.71;
-     }
-     if(i == 4)
-     {
-        val[i] = -0.00002*pow(alpha[i] * rad2deg,4)-0.0007*pow(alpha[i] * rad2deg,3)+0.0157*pow(alpha[i] * rad2deg,2)+3.4325*(alpha[i] * rad2deg)+354.91;
-     }
-     if(i == 5)
-     {
-        val[i] = 0.0012*pow(alpha[i] * rad2deg,2)-2.25*(alpha[i] * rad2deg)+350.95;
-     }
+     for(int i = 0; i<6; i++){
+        val[i] = map(alpha[i]*rad2deg,-30,30,SERVOMIN[i],SERVOMAX[i]);
+    }
     }
     Serial.println("]");
   
@@ -275,7 +233,11 @@ void loop() {
   }
   Pang[0] = map(platX,0,1007,-5,5)*deg2rad;
   Pang[1] = map(platY,0,1007,-5,5)*deg2rad;
-  getAlpha(T, Pang, horn, alpha, beta, P, B, s, a);
+   getAlpha(T, Pang, horn, alpha, beta, P, B, s, a);
+//  float testmax = 30 * deg2rad;
+//  for (short int i = 0; i < 6; ++i) {
+//    alpha[i] = testmax;
+//  }
     
     
 
@@ -294,29 +256,9 @@ void loop() {
     Serial.println(alphn);
     }
     for(int i = 0; i<6; i++){
-     if(i==0){
-        val[i] = -0.0004*pow(alpha[i] * rad2deg,3)+0.0018*pow(alpha[i] * rad2deg,2)+2.5238*(alpha[i] * rad2deg)+338.57;       
-      }       
-     if(i == 1)
-     {
-        val[i] = -0.0036*pow(alpha[i] * rad2deg,2)-2.3214*(alpha[i] * rad2deg)+354.29;
-     }
-     if(i == 2)
-     {
-        val[i] = -0.0003*pow(alpha[i] * rad2deg,3)-0.0036*pow(alpha[i] * rad2deg,2)+2.7302*(alpha[i] * rad2deg)+379.29;
-     }
-     if(i == 3)
-     {
-        val[i] = 0.0036*pow(alpha[i] * rad2deg,2)-2.3214*(alpha[i] * rad2deg)+385.71;
-     }
-     if(i == 4)
-     {
-        val[i] = -0.00002*pow(alpha[i] * rad2deg,4)-0.0007*pow(alpha[i] * rad2deg,3)+0.0157*pow(alpha[i] * rad2deg,2)+3.4325*(alpha[i] * rad2deg)+354.91;
-     }
-     if(i == 5)
-     {
-        val[i] = 0.0012*pow(alpha[i] * rad2deg,2)-2.25*(alpha[i] * rad2deg)+350.95;
-     }
+      for(int i = 0; i<6; i++){
+        val[i] = (int) map(alpha[i]*rad2deg,-30,30,SERVOMIN[i],SERVOMAX[i]);
+    }
     }
     Serial.println("]");
   
